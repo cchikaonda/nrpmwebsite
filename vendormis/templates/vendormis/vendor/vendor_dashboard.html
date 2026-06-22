@@ -1,0 +1,35 @@
+{% extends "vendormis/vendor_dashbord_base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>👋 Welcome, {{ user.username }}</h2>
+    <p>Vendor Dashboard</p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Profile Status</h5>
+                <p>Active Vendor</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Business</h5>
+                <p>Registered</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Applications</h5>
+                <p>0 Pending</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

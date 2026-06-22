@@ -1,0 +1,36 @@
+{% extends 'vendormis/vmis_base.html' %}
+{% block title %}Districts{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Districts</h2>
+    <a href="{% url 'vendormis:district_create' %}" class="btn btn-success">Add District</a>
+</div>
+
+<div class="card shadow-sm p-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Nation</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for district in districts %}
+            <tr>
+                <td>{{ district.name }}</td>
+                <td>{{ district.nation.name }}</td>
+                <td>
+                    <a href="{% url 'vendormis:district_update' district.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'vendormis:district_delete' district.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center">No districts found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "officer_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h3 class="text-center mb-4">
+                        <i class="fa-solid fa-store"></i> Vendor Registration
+                    </h3>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ wizard.management_form }}
+
+                        {% for field in wizard.form %}
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                {{ field.label }}
+                            </label>
+
+                            <div class="input-group">
+
+                                {# ICONS #}
+                                {% if field.name == "username" %}
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-user"></i>
+                                    </span>
+                                {% elif "password" in field.name %}
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </span>
+                                {% endif %}
+
+                                {{ field }}
+
+                                {# PASSWORD TOGGLE BUTTON #}
+                                {% if "password" in field.name %}
+                                    <span class="input-group-text toggle-password" style="cursor:pointer;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                            {% if field.help_text %}
+                                <small class="text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-success">
+                                {% if wizard.steps.next %}Next{% else %}Register{% endif %}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'vendormis:vendor_login' %}">
+                            Already have an account? Login
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".toggle-password").forEach(function (toggle) {
+        toggle.addEventListener("click", function () {
+            const input = this.parentElement.querySelector("input");
+            const icon = this.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    });
+});
+</script>
+{% endblock extra_js %}

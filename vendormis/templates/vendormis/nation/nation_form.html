@@ -1,0 +1,28 @@
+{% extends "vendormis/vmis_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+<h2>
+    {% if view.object %}
+        Edit Nation: {{ view.object.name }}
+    {% else %}
+        Add Nation
+    {% endif %}
+</h2>
+<div class="card shadow-sm p-4">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">
+            {% if view.object %}
+                Update
+            {% else %}
+                Save
+            {% endif %}
+        </button>
+    </form>
+
+    <a href="{% url 'vendormis:nation_list' %}" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+{% endblock %}

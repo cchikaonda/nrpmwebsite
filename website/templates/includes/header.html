@@ -1,0 +1,118 @@
+{% load static wagtailsettings_tags wagtailimages_tags wagtailcore_tags menu_tags %}
+
+{% get_settings "website.SiteBranding" as site_branding %}
+{% wagtail_site as current_site %}
+{% flat_menu "main" as main_menu %}
+
+<!-- NAVBAR -->
+<header id="navbar"
+        class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent">
+    <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 font-bold text-lg text-green-700">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto">
+            <span class="hidden sm:inline">
+                {{ current_site.site_name|default:"New Restoration Plan Malawi" }}
+            </span>
+        </a>
+
+        <!-- Mobile toggle -->
+        <button id="menuBtn" class="md:hidden text-gray-800 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex items-center space-x-8 font-medium">
+            <li>
+                <a href="/"
+                   class="nav-link {% if request.path == '/' %}text-green-700{% endif %}">
+                    Home
+                </a>
+            </li>
+
+            {% for item in main_menu.get_children %}
+                {% if item.get_children %}
+                    <!-- Dropdown -->
+                    <li class="relative group">
+                        <a href="{{ item.url }}"
+                           class="nav-link flex items-center gap-1">
+                            {{ item.title }}
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </a>
+
+                        <ul class="absolute left-0 mt-3 w-56 bg-white rounded-xl shadow-lg
+                                   opacity-0 invisible group-hover:opacity-100
+                                   group-hover:visible transition-all duration-200">
+                            {% for child in item.get_children %}
+                                <li>
+                                    <a href="{{ child.url }}"
+                                       class="block px-4 py-3 hover:bg-green-600 hover:text-white">
+                                        {{ child.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% else %}
+                    <!-- Normal link -->
+                    <li>
+                        <a href="{{ item.url }}" class="nav-link">
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Donate CTA -->
+            <li>
+                <a href="/donate/"
+                   class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full">
+                    Donate
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu"
+         class="hidden md:hidden bg-white/95 backdrop-blur-md shadow-lg">
+        <ul class="px-6 py-6 space-y-4">
+            <li><a href="/" class="block">Home</a></li>
+
+            {% for item in main_menu.get_children %}
+                <li>
+                    <a href="{{ item.url }}" class="block font-medium">
+                        {{ item.title }}
+                    </a>
+                    {% if item.get_children %}
+                        <ul class="pl-4 mt-2 space-y-2 text-sm">
+                            {% for child in item.get_children %}
+                                <li>
+                                    <a href="{{ child.url }}" class="block">
+                                        {{ child.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+
+            <li>
+                <a href="/donate/"
+                   class="block text-center bg-green-600 text-white py-3 rounded-full">
+                    Donate
+                </a>
+            </li>
+        </ul>
+    </div>
+</header>

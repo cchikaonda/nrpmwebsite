@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1>{{ page.title }}</h1>
+    {{ page.intro|richtext }}
+
+    <div class="row mt-4">
+        {% for program in page.programs.all %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ program.title }}</h5>
+                    {{ program.description|richtext }}
+                </div>
+                {% if program.images.all %}
+                <div id="carousel-{{ program.id }}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for img in program.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            {% image img.image original as prog_img %}
+                            <img src="{{ prog_img.url }}" class="d-block w-100" alt="{{ img.caption }}">
+                            {% if img.caption %}
+                            <div class="carousel-caption d-none d-md-block">
+                                <p>{{ img.caption }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ program.id }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ program.id }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

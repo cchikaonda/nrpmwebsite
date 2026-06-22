@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+<!-- Hero Section -->
+{% load wagtailimages_tags %}
+
+{% if page.hero_image %}
+    {% image page.hero_image fill-1920x800 as hero_img %}
+    <section class="hero-section text-center py-5" style="background-image: url('{{ hero_img.url }}');">
+{% else %}
+    <section class="hero-section text-center py-5" style="background-image: url('{% static 'images/hero.jpg' %}');">
+{% endif %}
+    <div class="container position-relative hero-content">
+        {% if page.hero_title %}
+            <h1 class="display-5 fw-bold text-white">{{ page.hero_title }}</h1>
+        {% endif %}
+        {% if page.hero_subtitle %}
+            <p class="lead text-white">{{ page.hero_subtitle }}</p>
+        {% endif %}
+        {% if page.hero_button_text and page.hero_button_link %}
+            <a href="{{ page.hero_button_link }}" class="btn btn-success btn-lg">{{ page.hero_button_text }}</a>
+        {% endif %}
+    </div>
+    <div class="hero-overlay"></div>
+</section>
+
+{% block extra_css %}
+<style>
+.hero-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Optional: responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .hero-section p.lead {
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+
+
+<!-- Mission / Vision -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3>Our Mission</h3>
+                        {{ page.mission|richtext }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3>Our Vision</h3>
+                        {{ page.vision|richtext }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Programs -->
+<section class="bg-success text-white py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Our Key Focus Areas</h2>
+        <div class="row g-4">
+            {% for block in page.key_programs %}
+                {% if block.block_type == "program" %}
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded h-100 bg-white text-dark text-center">
+                            {{ block.value }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if page.vendor_app_url %}
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <!-- Icon -->
+                        <i class="fas fa-sign-in-alt fa-2x mb-3"></i>  
+
+                        <!-- Link -->
+                        <a href="{{ page.vendor_app_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+                            Go to Vendor MIS
+                        </a>
+                    </div>
+               
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+
+<!-- Our Partners -->
+{% if page.partners.all %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Our Partners</h2>
+
+        <div class="row g-4 justify-content-center align-items-center">
+            {% for partner in page.partners.all %}
+                <div class="col-6 col-md-3 text-center">
+                    <div class="card h-100 border-0 shadow-sm p-3">
+                        {% if partner.logo %}
+                            {% image partner.logo fill-300x200 as partner_logo %}
+                            <img 
+                                src="{{ partner_logo.url }}" 
+                                alt="{{ partner.name }}" 
+                                class="img-fluid mb-3"
+                                style="max-height: 120px; object-fit: contain;"
+                            >
+                        {% endif %}
+
+                        <h6 class="fw-bold">{{ partner.name }}</h6>
+
+                        {% if partner.website %}
+                            <a href="{{ partner.website }}" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="btn btn-sm btn-outline-success mt-2">
+                                Visit Website
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+{% endblock %}

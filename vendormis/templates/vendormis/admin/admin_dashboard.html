@@ -1,0 +1,13 @@
+{% extends 'vendormis/vmis_base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <p>This is your vendor dashboard.</p>
+    <form method="post" action="{% url 'vendormis:vendor_logout' %}">
+    {% csrf_token %}
+    <button class="btn btn-danger">Logout</button>
+</form>
+</div>
+{% endblock %}

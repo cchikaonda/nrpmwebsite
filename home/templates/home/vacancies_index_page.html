@@ -1,0 +1,29 @@
+# templates/vacancies/vacancies_index_page.html
+"""
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<section class="vacancies container py-5">
+    <h1>{{ page.title }}</h1>
+    <div class="intro">{{ page.intro|richtext }}</div>
+
+    <ul class="vacancy-list">
+        <ul class="vacancy-list">
+    {% for vacancy in page.vacancies.all %}
+        {% if vacancy.is_open %}
+            <li class="vacancy-item mb-6 p-4 border-b">
+                <h3>{{ vacancy.title }}</h3>
+                <p><strong>Location:</strong> {{ vacancy.location }}</p>
+                <p><strong>Deadline:</strong> {{ vacancy.deadline }}</p>
+                <div>{{ vacancy.description|richtext }}</div>
+            </li>
+        {% endif %}
+    {% empty %}
+        <p>No vacancies available at the moment.</p>
+    {% endfor %}
+</ul>
+    </ul>
+</section>
+{% endblock %}
+"""

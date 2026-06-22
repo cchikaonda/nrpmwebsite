@@ -1,0 +1,363 @@
+{% extends "officer_base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary">📄 Vendor List</h2>
+            <p class="text-muted mb-0">
+                Manage and monitor all registered vendors
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'vendormis:vendor_register' %}" class="btn btn-success">
+                ➕ Register Vendor
+            </a>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6>Total Vendors</h6>
+                    <h2>{{ total_vendors }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-warning-subtle">
+                <div class="card-body text-center">
+                    <h6>Pending Approval</h6>
+                    <h2 class="text-warning">
+                        {{ pending_approvals }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-success-subtle">
+                <div class="card-body text-center">
+                    <h6>Approved Vendors</h6>
+                    <h2 class="text-success">
+                        {{ approved_vendors }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-danger-subtle">
+                <div class="card-body text-center">
+                    <h6>Suspended Vendors</h6>
+                    <h2 class="text-danger">
+                        {{ suspended_vendors }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <input type="text"
+                               name="search"
+                               class="form-control"
+                               placeholder="🔍 Search vendor name, phone, business...">
+                    </div>
+
+                    <div class="col-md-3">
+                        <select name="market" class="form-select">
+                            <option value="">All Markets</option>
+                            <option value="chipiku">Chipiku Market</option>
+                            <option value="kawale">Kawale Market</option>
+                            <option value="soweto">Soweto Market</option>
+                            <option value="area18">Area 18 Market</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <select name="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            Filter
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- VENDOR TABLE -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                👨‍💼 Registered Vendors
+            </h5>
+
+            <div>
+                <button class="btn btn-outline-success btn-sm">
+                    ⬇ Export Excel
+                </button>
+
+                <button class="btn btn-outline-dark btn-sm">
+                    🖨 Print
+                </button>
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>#</th>
+                        <th>Vendor</th>
+                        <th>Business</th>
+                        <th>Market</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Date Registered</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for vendor in vendors %}
+
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>
+                            <div class="d-flex align-items-center">
+
+                                <div class="me-3">
+                                    <img src="{{vendor.image.url}}"
+                                         class="rounded-circle"
+                                         width="45"
+                                         height="45">
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        {{ vendor.first_name }}
+                                        {{ vendor.surname }}
+                                    </strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        ID: {{ vendor.id }}
+                                    </small>
+                                </div>
+
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ vendor.business_details }}
+                        </td>
+
+                        <td>
+                            {{ vendor.market }}
+                        </td>
+
+                        <td>
+                            {{ vendor.phone_number }}
+                        </td>
+
+                        <td>
+
+                            {% if vendor.status == "Approved" %}
+                                <span class="badge bg-success">
+                                    Approved
+                                </span>
+
+                            {% elif vendor.status == "Pending" %}
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+
+                            {% elif vendor.status == "Suspended" %}
+                                <span class="badge bg-danger">
+                                    Suspended
+                                </span>
+
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    Unknown
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ vendor.created_at|date:"d M Y" }}
+                        </td>
+
+                        <td>
+
+                            <div class="dropdown">
+
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+
+                                    Actions
+
+                                </button>
+
+                                <ul class="dropdown-menu">
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#">
+                                            👁 View
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#">
+                                            ✏ Edit
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#">
+                                            🆔 Print ID
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item text-danger"
+                                           href="#">
+                                            🗑 Delete
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8" class="text-center py-5">
+
+                            <div class="text-muted">
+
+                                <h5>No vendors found</h5>
+
+                                <p>
+                                    No vendors have been registered yet.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+
+        <div class="text-muted">
+            Showing {{ vendors.start_index }}
+            to {{ vendors.end_index }}
+            of {{ vendors.paginator.count }} vendors
+        </div>
+
+        <nav>
+
+            <ul class="pagination">
+
+                {% if vendors.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ vendors.previous_page_number }}">
+                            Previous
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in vendors.paginator.page_range %}
+
+                    <li class="page-item {% if vendors.number == num %}active{% endif %}">
+
+                        <a class="page-link"
+                           href="?page={{ num }}">
+                            {{ num }}
+                        </a>
+
+                    </li>
+
+                {% endfor %}
+
+                {% if vendors.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ vendors.next_page_number }}">
+                            Next
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock content %}

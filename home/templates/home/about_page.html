@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto"> 
+            <section class="mb-5">
+                {{ page.introduction|richtext }}
+            </section>
+
+            <section>
+                <h3>What We Do</h3>
+                {{ page.what_we_do|richtext }}
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

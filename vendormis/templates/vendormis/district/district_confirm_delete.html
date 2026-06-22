@@ -1,0 +1,13 @@
+{% extends 'vendormis/vmis_base.html' %}
+{% block title %}Delete District{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 text-center">
+    <h3>Are you sure you want to delete "{{ object.name }}"?</h3>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'vendormis:district_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

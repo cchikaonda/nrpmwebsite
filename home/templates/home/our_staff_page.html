@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+    .staff-section { padding:80px 20px; background:#f8f9fa; }
+    .staff-card { border:none; border-radius:20px; background:#fff; overflow:hidden; transition:all .4s ease; box-shadow:0 10px 25px rgba(0,0,0,.08); height:100%; }
+    .staff-card:hover { transform:translateY(-8px); box-shadow:0 18px 40px rgba(0,0,0,.15); }
+    .staff-img-wrapper { width:180px; height:180px; margin:30px auto 15px auto; border-radius:50%; overflow:hidden; border:6px solid #0d6efd; box-shadow:0 8px 20px rgba(0,0,0,.18); position:relative; background:#fff; }
+    .staff-img { width:100%; height:100%; object-fit:cover; border-radius:50%; transition:transform .5s ease; display:block; }
+    .staff-img-wrapper:hover .staff-img { transform:scale(1.18); }
+    .staff-name { font-weight:700; margin-bottom:5px; font-size:1.3rem; }
+    .staff-role { color:#0d6efd; font-weight:600; margin-bottom:15px; }
+    
+    /* Bio Styling */
+    .bio-text { text-align: justify; line-height: 1.7; color: #555; font-size: 15px; }
+    .hidden { display: none !important; }
+    .toggle-btn { color:#0d6efd; font-weight:600; cursor:pointer; text-decoration:none; background:none; border:none; padding:0; display:block; width:100%; text-align:center; }
+    .toggle-btn:hover { text-decoration:underline; }
+
+    .social-icons { opacity:0; transition:opacity .3s ease; }
+    .staff-card:hover .social-icons { opacity:1; }
+    .social-icons a { margin:0 8px; color:#555; font-size:1.2rem; transition:.3s; }
+    .social-icons a:hover { color:#0d6efd; transform:scale(1.2); }
+    .staff-divider { width:70px; height:4px; background:#0d6efd; margin:0 auto 20px; border-radius:30px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="staff-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold display-5">{{ page.title }}</h1>
+            <div class="staff-divider"></div>
+            <p class="text-muted fs-5">{{ page.intro }}</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            {% for member in page.staff.all %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card staff-card p-3 text-center">
+                    {% if member.photo %}
+                        {% image member.photo fill-500x500 as photo %}
+                        <div class="staff-img-wrapper">
+                            <img src="{{ photo.url }}" alt="{{ member.name }}" class="staff-img">
+                        </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="staff-name">{{ member.name }}</h4>
+                        <p class="staff-role">{{ member.position }}</p>
+
+                        <!-- BIO SECTION -->
+                        <div class="bio-text mb-3">
+                            {% if member.bio|length > 100 %}
+                                <div id="short-{{ member.id }}">
+                                    {{ member.bio|truncatechars:100 }}
+                                    <button class="toggle-btn" onclick="toggleBio('{{ member.id }}')">Read More</button>
+                                </div>
+                                <div id="full-{{ member.id }}" class="hidden">
+                                    {{ member.bio }}
+                                    <button class="toggle-btn" onclick="toggleBio('{{ member.id }}')">Read Less</button>
+                                </div>
+                            {% else %}
+                                {{ member.bio }}
+                            {% endif %}
+                        </div>
+
+                        <!-- SOCIAL ICONS -->
+                        <div class="social-icons mt-auto pt-3">
+                            {% if member.linkedin %}<a href="{{ member.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                            {% if member.facebook %}<a href="{{ member.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>{% endif %}
+                            {% if member.twitter %}<a href="{{ member.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                            {% if member.email %}<a href="mailto:{{ member.email }}"><i class="fas fa-envelope"></i></a>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleBio(id) {
+        document.getElementById('short-' + id).classList.toggle('hidden');
+        document.getElementById('full-' + id).classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "officer_base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+
+    <h2 class="mb-4">👨‍💼 Officer Dashboard</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center bg-light">
+                <h5>Total Vendors</h5>
+                <h2 class="text-primary">{{ total_vendors }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center bg-warning-subtle">
+                <h5>Pending Approvals</h5>
+                <h2 class="text-warning">{{ pending_approvals }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center bg-success-subtle">
+                <h5>Approved Vendors</h5>
+                <h2 class="text-success">{{ approved_vendors }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-5">
+        <a href="{% url 'vendormis:vendor_register' %}" class="btn btn-success">➕ Register Vendor</a>
+        <a href="{% url 'vendormis:vendor_list' %}" class="btn btn-primary">📄 View Vendors</a>
+        <a href="#" class="btn btn-dark">🆔 Print Vendor IDs</a>
+    </div>
+
+</div>
+{% endblock content %}
+

@@ -1,0 +1,216 @@
+{% load static wagtailsettings_tags wagtailimages_tags wagtailcore_tags menu_tags %}
+
+{% get_settings "website.SiteBranding" as site_branding %}
+{% wagtail_site as current_site %}
+{% flat_menu "main" as main_menu %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ current_site.site_name|default:"New Restoration Plan – Malawi" }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- NAVBAR -->
+<header id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent">
+    <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 font-bold text-lg text-green-700">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto">
+            <span class="hidden sm:inline">
+                {{ current_site.site_name|default:"New Restoration Plan Malawi" }}
+            </span>
+        </a>
+
+        <!-- Mobile toggle -->
+        <button id="menuBtn" class="md:hidden text-gray-800 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex items-center space-x-8 font-medium">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#programs" class="nav-link">Programs</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            {% for item in main_menu.get_children %}
+                <li><a href="{{ item.url }}" class="nav-link">{{ item.title }}</a></li>
+            {% endfor %}
+            <li>
+                <a href="/donate/"
+                   class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full">
+                    Donate
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-md shadow-lg">
+        <ul class="px-6 py-6 space-y-4">
+            <li><a href="#home" class="block">Home</a></li>
+            <li><a href="#about" class="block">About</a></li>
+            <li><a href="#programs" class="block">Programs</a></li>
+            <li><a href="#projects" class="block">Projects</a></li>
+            <li><a href="#contact" class="block">Contact</a></li>
+            {% for item in main_menu.get_children %}
+                <li>
+                    <a href="{{ item.url }}" class="block font-medium">{{ item.title }}</a>
+                </li>
+            {% endfor %}
+            <li>
+                <a href="/donate/"
+                   class="block text-center bg-green-600 text-white py-3 rounded-full">
+                    Donate
+                </a>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<!-- HERO SECTION - MALAWI SLIDING CAROUSEL -->
+<section id="home" class="relative h-screen overflow-hidden">
+    <!-- Slides -->
+    <div id="heroSlides" class="h-full w-full relative">
+        <!-- Malawian Market -->
+        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-100"
+             style="background-image: url('https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6');">
+        </div>
+
+        <!-- Lake Malawi -->
+        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0"
+             style="background-image: url('https://images.unsplash.com/photo-1593697821252-0c9137d9fc45');">
+        </div>
+
+        <!-- Malawi Landscape / Scenery -->
+        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0"
+             style="background-image: url('https://images.unsplash.com/photo-1559825481-12a05cc00344');">
+        </div>
+    </div>
+
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-black/55"></div>
+
+    <!-- Hero Content -->
+    <div class="absolute inset-0 flex items-center justify-center px-6">
+        <div class="text-center text-white max-w-3xl">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                Restoring Malawi’s Land, <br class="hidden md:block">
+                Empowering Communities, <br class="hidden md:block">
+                Transforming Lives
+            </h1>
+
+            <p class="text-lg md:text-xl mb-8 text-gray-100 leading-relaxed">
+                New Restoration Plan – Malawi is deeply committed to sustainable development,
+                environmental restoration, and inclusive community growth.  
+                We work hand in hand with local communities to strengthen livelihoods,
+                protect natural resources, and build a resilient future for generations to come.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#about"
+                   class="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-full font-semibold transition">
+                    Learn More
+                </a>
+                <a href="#projects"
+                   class="border border-white hover:bg-white hover:text-green-700 px-8 py-4 rounded-full font-semibold transition">
+                    Our Projects
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hero Slider Script -->
+<script>
+    const slides = document.querySelectorAll('#heroSlides > div');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.opacity = (i === index) ? '1' : '0';
+        });
+    }
+
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }, 5000);
+</script>
+
+
+
+<!-- ABOUT SECTION -->
+<section id="about" class="py-20">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-10">About Us</h2>
+        <p class="text-center max-w-3xl mx-auto">New Restoration Plan – Malawi works with communities, partners, and stakeholders to implement projects that restore ecosystems, improve food security, and promote sustainable livelihoods.</p>
+    </div>
+</section>
+
+<!-- PROGRAMS SECTION -->
+<section id="programs" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Programs</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-gray-100 p-6 rounded-xl shadow">
+                <h3 class="font-semibold text-xl mb-2">Environmental Restoration</h3>
+                <p>Tree planting, land rehabilitation, and climate resilience initiatives.</p>
+            </div>
+            <div class="bg-gray-100 p-6 rounded-xl shadow">
+                <h3 class="font-semibold text-xl mb-2">Agriculture & Food Security</h3>
+                <p>Supporting farmers with sustainable farming practices and inputs.</p>
+            </div>
+            <div class="bg-gray-100 p-6 rounded-xl shadow">
+                <h3 class="font-semibold text-xl mb-2">Community Development</h3>
+                <p>Empowering communities through skills training and economic inclusion.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS SECTION -->
+<section id="projects" class="py-20">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-10">Our Projects</h2>
+        <p class="text-center max-w-3xl mx-auto">We implement impactful projects across Malawi in collaboration with local and international partners.</p>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="py-20 bg-green-700 text-white">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
+        <p>Email: info@newrestorationplanmw.org</p>
+        <p>Phone: +265 XXX XXX XXX</p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-gray-300 py-6">
+    <div class="text-center">
+        &copy; 2025 {{ current_site.site_name|default:"New Restoration Plan – Malawi" }}. All rights reserved.
+    </div>
+</footer>
+
+<script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+
+</body>
+</html>

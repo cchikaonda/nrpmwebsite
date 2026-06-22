@@ -1,0 +1,33 @@
+{% extends 'vendormis/vmis_base.html' %}
+{% block title %}Traditional Authorities{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Traitional Authorities</h2>
+    <a href="{% url 'vendormis:traditionalauthority_create' %}" class="btn btn-success">Add TA</a>
+</div>
+<div class="card shadow-sm p-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>District</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ta in tas %}
+            <tr>
+                <td>{{ ta.name }}</td>
+                <td>{{ ta.district.name }}</td>
+                <td>
+                    <a href="{% url 'vendormis:traditionalauthority_update' ta.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'vendormis:traditionalauthority_delete' ta.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center">No authorities found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,360 @@
+{% load static wagtailsettings_tags wagtailimages_tags wagtailcore_tags menu_tags %}
+
+{% get_settings "website.SiteBranding" as site_branding %}
+{% wagtail_site as current_site %}
+{% flat_menu "main" as main_menu %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ current_site.site_name|default:"New Restoration Plan – Malawi" }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { scroll-behavior: smooth; 
+        }
+        .text-justify-custom {
+            text-align: justify;
+        }
+    </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- NAVBAR -->
+<header id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-100">
+    <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 font-bold text-lg text-green-700">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto">
+            <span class="hidden sm:inline">
+                {{ current_site.site_name|default:"New Restoration Plan Malawi" }}
+            </span>
+        </a>
+        <button id="menuBtn" class="md:hidden text-gray-800 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <ul class="hidden md:flex items-center space-x-8 font-medium">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#programs" class="nav-link">Programs</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="#staff" class="nav-link">Our Staff</a></li>
+            <li><a href="#vacancies/" class="nav-link">Vacancies</a></li>
+            <li><a href="/donate/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full">Donate</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section id="home" class="relative h-screen w-full overflow-hidden">
+    {% if page.slider_images.all %}
+        <div id="heroSlides" class="absolute inset-0 w-full h-full">
+            {% for slide in page.slider_images.all %}
+                {% image slide.image fill-1920x1080-c100 as img %}
+                <div class="slider-item absolute inset-0 bg-cover bg-center transition-opacity duration-1000 {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}" 
+                     style="background-image: url('{{ img.url }}');"></div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% if page.hero_image %}
+            {% image page.hero_image fill-1920x1080-c100 as img %}
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ img.url }}');"></div>
+        {% endif %}
+    {% endif %}
+
+    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+        <div class="p-10 rounded-xl text-center text-white max-w-2xl">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Restoring Lives, Land & Livelihoods</h1>
+            <p class="mb-6">New Restoration Plan—Malawi is a projects arm of New Restoration Ministries International.</p>
+            <a href="#about" class="inline-block bg-green-600 hover:bg-green-700 px-6 py-3 rounded-full font-semibold">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <h2 class="text-3xl font-bold text-center mb-12">
+            {{ about_page_content.title }}
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-12 items-center bg-white rounded-2xl shadow-lg p-6 md:p-10">
+
+            <div class="w-full">
+                {% if about_page_content.image %}
+                    {% image about_page_content.image fill-800x600 as img %}
+                    <img src="{{ img.url }}" 
+                         alt="{{ about_page_content.title }}"
+                         class="w-full h-96 object-cover rounded-2xl shadow-md">
+                {% else %}
+                    <img src="{% static 'images/about-placeholder.jpg' %}" 
+                         alt="About"
+                         class="w-full h-96 object-cover rounded-2xl shadow-md">
+                {% endif %}
+            </div>
+
+            <div>
+                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none">
+                    {{ about_page_content.introduction|richtext }}
+                </div>
+
+                <div class="mt-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg">
+                    <p class="text-sm text-gray-700">
+                        {{ about_page_content.what_we_do|safe }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MISSION & VISION SECTION -->
+<section id="mission-vision" class="py-20 bg-gray-100">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+        <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
+            <h2 class="text-2xl font-bold mb-4 text-green-700">Our Mission</h2>
+            <div>{{ page.mission|safe }}</div>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
+            <h2 class="text-2xl font-bold mb-4 text-green-700">Our Vision</h2>
+            <div>{{ page.vision|safe }}</div>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRAMS SECTION -->
+<section id="programs" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Key Programs</h2>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for program in programs %}
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col" 
+                     x-data="{ expanded: false }">
+                    
+                    <!-- Program Image -->
+                    {% if program.image %}
+                        {% image program.image fill-600x400 as img %}
+                        <div class="h-56 w-full overflow-hidden">
+                            <img src="{{ img.url }}" alt="{{ program.title }}" class="w-full h-full object-cover">
+                        </div>
+                    {% endif %}
+
+                    <!-- Program Content -->
+                    <div class="p-6 flex-grow">
+                        <h3 class="font-bold text-xl mb-3 text-gray-900">{{ program.title }}</h3>
+                        
+                        <div class="text-gray-600 text-sm leading-relaxed prose max-w-none">
+                            <!-- Short version (always visible) -->
+                            <div x-show="!expanded">
+                                {{ program.description|striptags|truncatewords:20 }}
+                            </div>
+                            
+                            <!-- Full version (toggleable) -->
+                            <div x-show="expanded" x-cloak>
+                                {{ program.description|richtext }}
+                            </div>
+                        </div>
+
+                        <!-- Read More Button -->
+                        <button @click="expanded = !expanded" 
+                                class="inline-flex items-center text-green-700 font-bold mt-4 hover:text-green-800 transition-colors focus:outline-none">
+                            <span x-text="expanded ? 'Show Less' : 'Read More...'"></span>
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-gray-500 col-span-full">No programs have been added yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS SECTION -->
+<section id="projects" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Projects</h2>
+        
+        <div class="space-y-16">
+            {% for project in projects %}
+                <div class="bg-white p-8 md:p-12 rounded-3xl shadow-lg transition-all duration-300 hover:shadow-2xl" 
+                     x-data="{ 
+                        images: [{% for img_obj in project.images.all %}'{% image img_obj.image original as img %}{{ img.url }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                        activeImage: 0,
+                        expanded: false,
+                        showModal: false
+                     }"
+                     x-init="setInterval(() => { activeImage = (activeImage + 1) % images.length }, 5000)">
+                    
+                    {% if project.images.all %}
+                        <!-- Image Container -->
+                        <div class="w-full mb-10 overflow-hidden rounded-2xl cursor-pointer" @click="showModal = true">
+                            <template x-for="(url, index) in images" :key="index">
+                                <img :src="url" x-show="activeImage === index" 
+                                     class="w-full h-64 md:h-96 object-cover object-top transition-opacity duration-700 ease-in-out">
+                            </template>
+                        </div>
+
+                        <!-- Full-screen Modal -->
+                        <div x-show="showModal" x-cloak 
+                             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+                             @click.self="showModal = false">
+                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
+                            <img :src="images[activeImage]" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+                        </div>
+                    {% endif %}
+                    
+                    <div class="w-full">
+                        <h3 class="font-bold text-4xl mb-6 text-gray-900">{{ project.title }}</h3>
+                        
+                        <div class="text-gray-700 leading-relaxed text-lg prose max-w-none">
+                            <div x-show="!expanded">{{ project.description|striptags|truncatewords:60 }}</div>
+                            <div x-show="expanded" x-cloak>{{ project.description|richtext }}</div>
+                            
+                            <button @click="expanded = !expanded" 
+                                    class="inline-flex items-center text-green-700 font-bold mt-6 hover:text-green-800 transition-colors focus:outline-none">
+                                <span x-text="expanded ? 'Show Less' : 'Read Full Project Details...'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-gray-500 py-10">No projects added yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- STAFF SECTION -->
+<section id="staff" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Staff</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for member in staff_members %}
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col" 
+                     x-data="{ expanded: false, showModal: false }">
+                    
+                    {% if member.photo %}
+                        {% image member.photo fill-500x500 as staff_photo %}
+                        <img src="{{ staff_photo.url }}" 
+                             @click="showModal = true"
+                             class="w-full h-72 object-cover cursor-pointer hover:opacity-90 transition">
+                        
+                        <div x-show="showModal" x-cloak 
+                             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+                             @click.self="showModal = false">
+                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
+                            {% image member.photo original as full_photo %}
+                            <img src="{{ full_photo.url }}" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+                        </div>
+                    {% endif %}
+                    
+                    <div class="p-6 text-center flex-grow">
+                        <h3 class="text-xl font-semibold">{{ member.name }}</h3>
+                        <p class="text-green-600 font-medium mb-4">{{ member.position }}</p>
+                        
+                        <div class="text-sm text-gray-600 leading-relaxed text-left">
+                            <div x-show="!expanded">
+                                {{ member.bio|truncatewords:20 }}
+                            </div>
+                            <div x-show="expanded" x-cloak>
+                                {{ member.bio }}
+                            </div>
+                            
+                            <button @click="expanded = !expanded" 
+                                    class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block w-full text-center">
+                                <span x-text="expanded ? 'Show Less' : 'Read Bio...'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-gray-500 col-span-full">No staff members listed yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- BOARD OF TRUSTEES -->
+<section id="board" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-4">Board of Trustees</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Meet the leaders guiding our vision and ensuring our commitment to the restoration of Malawi's land and livelihoods.
+        </p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for trustee in trustee_members %}
+                <div class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-green-200 transition-all duration-300 shadow-sm hover:shadow-lg" 
+                     x-data="{ expanded: false }">
+                    <div class="flex items-center gap-4 mb-6">
+                        {% if trustee.photo %}
+                            {% image trustee.photo fill-150x150 as t_photo %}
+                            <img src="{{ t_photo.url }}" alt="{{ trustee.name }}" class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm">
+                        {% else %}
+                            <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-2xl">
+                                {{ trustee.name|slice:":1" }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ trustee.name }}</h3>
+                            <p class="text-green-700 font-medium text-sm">{{ trustee.position }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-gray-600 text-sm leading-relaxed mb-4">
+                        <div x-show="!expanded">
+                            {{ trustee.bio|truncatewords:30 }}
+                        </div>
+                        <div x-show="expanded" x-cloak>
+                            {{ trustee.bio }}
+                        </div>
+                        
+                        <button @click="expanded = !expanded" 
+                                class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block text-xs uppercase tracking-wider">
+                            <span x-text="expanded ? 'Read Less' : 'Read More...'"></span>
+                        </button>
+                    </div>
+
+                    <div class="flex gap-3 text-gray-400 pt-4 border-t border-gray-200">
+                        {% if trustee.email %}<a href="mailto:{{ trustee.email }}" class="hover:text-green-600 text-xs font-semibold">Email</a>{% endif %}
+                        {% if trustee.linkedin %}<a href="{{ trustee.linkedin }}" target="_blank" class="hover:text-green-600 text-xs font-semibold">LinkedIn</a>{% endif %}
+                        {% if trustee.whatsapp %}<a href="https://wa.me/{{ trustee.whatsapp }}" target="_blank" class="hover:text-green-600 text-xs font-semibold">WhatsApp</a>{% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-gray-500 col-span-full">Trustee profiles coming soon.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT & FOOTER -->
+<section id="contact" class="py-20 bg-green-700 text-white text-center">
+    <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
+    <p>Email: info@newrestorationplanmw.org</p>
+</section>
+
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
+    &copy; 2025 New Restoration Plan – Malawi.
+</footer>
+
+<script>
+    // Slider Script
+    const slides = document.querySelectorAll('.slider-item');
+    let currentSlide = 0;
+    setInterval(() => {
+        slides[currentSlide].classList.replace('opacity-100', 'opacity-0');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.replace('opacity-0', 'opacity-100');
+    }, 5000);
+</script>
+
+</body>
+</html>
