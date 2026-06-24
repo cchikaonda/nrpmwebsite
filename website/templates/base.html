@@ -20,37 +20,78 @@
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800" x-data="{ emailModalOpen: false, emailRecipient: '', mobileMenuOpen: false }">
 
-<!-- NAVBAR -->
 <header id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-100">
     <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <!-- Logo -->
         <a href="/" class="flex items-center gap-3 font-bold text-lg text-green-700">
             <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto">
             <span class="hidden sm:inline">
                 {{ current_site.site_name|default:"New Restoration Plan Malawi" }}
             </span>
         </a>
-        <button id="menuBtn" class="md:hidden text-gray-800 focus:outline-none">
+        
+        <button id="menuBtn" @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-800 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
+
         <ul class="hidden md:flex items-center space-x-8 font-medium">
-            <li><a href="#home" class="nav-link">Home</a></li>
-            <li><a href="#about" class="nav-link">About</a></li>
-            <li><a href="#programs" class="nav-link">Programs</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
-            <li><a href="#staff" class="nav-link">Our Staff</a></li>
-            <li><a href="#vacancies/" class="nav-link">Vacancies</a></li>
-            <li><a href="/donate/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full">Donate</a></li>
+            <li><a href="#home" class="nav-link hover:text-green-700 transition">Home</a></li>
+            <li><a href="#about" class="nav-link hover:text-green-700 transition">About</a></li>
+            <li><a href="#programs" class="nav-link hover:text-green-700 transition">Programs</a></li>
+            <li><a href="#projects" class="nav-link hover:text-green-700 transition">Projects</a></li>
+            
+            <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                <button class="flex items-center gap-1 nav-link hover:text-green-700 focus:outline-none py-2">
+                    Our Team
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="open" 
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50" x-cloak>
+                    <a href="#board" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Board of Trustees</a>
+                    <a href="#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Our Staff</a>
+                </div>
+            </li>
+
+            <li><a href="#contact" class="nav-link hover:text-green-700 transition">Contact</a></li>
+            <li><a href="#vacancies/" class="nav-link hover:text-green-700 transition">Vacancies</a></li>
+            <li><a href="/donate/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition">Donate</a></li>
         </ul>
     </nav>
+
+    <div x-show="mobileMenuOpen" x-collapse class="md:hidden bg-white border-t border-gray-100 px-6 py-4" x-cloak>
+        <ul class="space-y-4 font-medium">
+            <li><a href="#home" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Home</a></li>
+            <li><a href="#about" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">About</a></li>
+            <li><a href="#programs" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Programs</a></li>
+            <li><a href="#projects" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Projects</a></li>
+            
+            <li x-data="{ teamOpen: false }">
+                <button @click="teamOpen = !teamOpen" class="w-full flex items-center justify-between py-1 hover:text-green-700 focus:outline-none">
+                    <span>Our Team</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': teamOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <ul x-show="teamOpen" x-collapse class="pl-4 mt-2 space-y-2 text-sm border-l border-gray-200">
+                    <li><a href="#board" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Board of Trustees</a></li>
+                    <li><a href="#staff" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Our Staff</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#contact" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Contact</a></li>
+            <li><a href="#vacancies/" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Vacancies</a></li>
+            <li class="pt-2"><a href="/donate/" class="block text-center bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition">Donate</a></li>
+        </ul>
+    </div>
 </header>
 
-<!-- HERO SECTION -->
 <section id="home" class="relative h-screen w-full overflow-hidden">
     {% if page.slider_images.all %}
         <div id="heroSlides" class="absolute inset-0 w-full h-full">
@@ -76,7 +117,6 @@
     </div>
 </section>
 
-<!-- ABOUT SECTION -->
 <section id="about" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
 
@@ -115,7 +155,6 @@
     </div>
 </section>
 
-<!-- MISSION & VISION SECTION -->
 <section id="mission-vision" class="py-20 bg-gray-100">
     <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
         <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
@@ -129,7 +168,6 @@
     </div>
 </section>
 
-<!-- PROGRAMS SECTION -->
 <section id="programs" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12">Our Key Programs</h2>
@@ -139,7 +177,6 @@
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col" 
                      x-data="{ expanded: false }">
                     
-                    <!-- Program Image -->
                     {% if program.image %}
                         {% image program.image fill-600x400 as img %}
                         <div class="h-56 w-full overflow-hidden">
@@ -147,23 +184,19 @@
                         </div>
                     {% endif %}
 
-                    <!-- Program Content -->
                     <div class="p-6 flex-grow">
                         <h3 class="font-bold text-xl mb-3 text-gray-900">{{ program.title }}</h3>
                         
                         <div class="text-gray-600 text-sm leading-relaxed prose max-w-none">
-                            <!-- Short version (always visible) -->
                             <div x-show="!expanded">
                                 {{ program.description|striptags|truncatewords:20 }}
                             </div>
                             
-                            <!-- Full version (toggleable) -->
                             <div x-show="expanded" x-cloak>
                                 {{ program.description|richtext }}
                             </div>
                         </div>
 
-                        <!-- Read More Button -->
                         <button @click="expanded = !expanded" 
                                 class="inline-flex items-center text-green-700 font-bold mt-4 hover:text-green-800 transition-colors focus:outline-none">
                             <span x-text="expanded ? 'Show Less' : 'Read More...'"></span>
@@ -177,7 +210,6 @@
     </div>
 </section>
 
-<!-- PROJECTS SECTION -->
 <section id="projects" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12">Our Projects</h2>
@@ -194,7 +226,6 @@
                      x-init="setInterval(() => { activeImage = (activeImage + 1) % images.length }, 5000)">
                     
                     {% if project.images.all %}
-                        <!-- Image Container -->
                         <div class="w-full mb-10 overflow-hidden rounded-2xl cursor-pointer" @click="showModal = true">
                             <template x-for="(url, index) in images" :key="index">
                                 <img :src="url" x-show="activeImage === index" 
@@ -202,11 +233,10 @@
                             </template>
                         </div>
 
-                        <!-- Full-screen Modal -->
                         <div x-show="showModal" x-cloak 
                              class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
                              @click.self="showModal = false">
-                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
+                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">×</button>
                             <img :src="images[activeImage]" class="max-w-full max-h-[90vh] object-contain rounded-lg">
                         </div>
                     {% endif %}
@@ -232,7 +262,6 @@
     </div>
 </section>
 
-<!-- STAFF SECTION -->
 <section id="staff" class="py-20 bg-gray-100">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12">Our Staff</h2>
@@ -250,7 +279,7 @@
                         <div x-show="showModal" x-cloak 
                              class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
                              @click.self="showModal = false">
-                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
+                            <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">×</button>
                             {% image member.photo original as full_photo %}
                             <img src="{{ full_photo.url }}" class="max-w-full max-h-[90vh] object-contain rounded-lg">
                         </div>
@@ -281,7 +310,7 @@
         </div>
     </div>
 </section>
-<!-- BOARD OF TRUSTEES -->
+
 <section id="board" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-4">Board of Trustees</h2>
@@ -335,14 +364,62 @@
     </div>
 </section>
 
-<!-- CONTACT & FOOTER -->
-<section id="contact" class="py-20 bg-green-700 text-white text-center">
-    <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
-    <p>Email: info@newrestorationplanmw.org</p>
+<section id="contact" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">Contact Us</h2>
+        
+        <div class="grid md:grid-cols-2 gap-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg">
+            <div class="flex flex-col justify-center">
+                <h3 class="text-2xl font-bold mb-6 text-green-700">Get In Touch</h3>
+                <p class="text-gray-600 mb-6">We would love to hear from you. Reach out to us using the details below or visit our office.</p>
+                <div class="space-y-4">
+                    <p class="flex items-start gap-3">
+                        <span class="font-bold min-w-[70px]">Email:</span> 
+                        <span class="flex flex-col gap-1">
+                            <button @click="emailRecipient = 'info@newresmi.com'; emailModalOpen = true;" 
+                                    class="text-green-600 hover:underline focus:outline-none text-left font-medium">
+                                info@newresmi.com
+                            </button>
+                            <button @click="emailRecipient = 'chiccochikaonda@gmail.com'; emailModalOpen = true;" 
+                                    class="text-gray-500 hover:underline focus:outline-none text-left text-sm">
+                                chiccochikaonda@gmail.com (Backup)
+                            </button>
+                        </span>
+                    </p>
+                    <p class="flex items-start gap-3">
+                        <span class="font-bold min-w-[70px]">Phone:</span>
+                        <span class="flex flex-col sm:flex-row sm:gap-4">
+                            <a href="tel:+265999358399" class="text-green-600 hover:underline font-medium">+265 999 358 399</a>
+                            <a href="tel:+265882423090" class="text-green-600 hover:underline font-medium">+265 882 423 090</a>
+                        </span>
+                    </p>
+                    <p class="flex items-start gap-3">
+                        <span class="font-bold min-w-[70px]">Location:</span> 
+                        <span class="text-gray-700">Area 3, NASA Building, 2nd Floor, Capital City, Lilongwe 3, Malawi.</span>
+                    </p>
+                    <p class="flex items-start gap-3">
+                        <span class="font-bold min-w-[70px]">Postal:</span> 
+                        <span class="text-gray-700">P.O. Box 1790, Blantyre, Malawi.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="w-full h-80 rounded-2xl overflow-hidden shadow-inner">
+                <iframe 
+                    src="https://www.google.com/maps/d/embed?mid=17Q8_JAdhKUoPvYpPLIb2LO1ghvAS184&ehbc=2E312F" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
 </section>
 
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-    &copy; 2025 New Restoration Plan – Malawi.
+    © 2026 New Restoration Plan – Malawi.
 </footer>
 
 <script>
@@ -350,11 +427,94 @@
     const slides = document.querySelectorAll('.slider-item');
     let currentSlide = 0;
     setInterval(() => {
-        slides[currentSlide].classList.replace('opacity-100', 'opacity-0');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.replace('opacity-0', 'opacity-100');
+        if(slides.length > 1) {
+            slides[currentSlide].classList.replace('opacity-100', 'opacity-0');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.replace('opacity-0', 'opacity-100');
+        }
     }, 5000);
 </script>
+
+<div x-data="{ emailSent: false, loading: false }"
+     x-show="emailModalOpen" 
+     x-cloak 
+     class="fixed inset-0 z-[150] flex items-center justify-center bg-black/50 p-4 transition-opacity duration-300"
+     @keydown.escape.window="emailModalOpen = false; emailSent = false;">
+    
+    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative"
+         @click.away="emailModalOpen = false; emailSent = false;">
+        
+        <button @click="emailModalOpen = false; emailSent = false;" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold focus:outline-none">
+            ×
+        </button>
+        
+        <div x-show="emailSent" class="text-center py-8">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Email Sent Successfully!</h3>
+            <p class="text-sm text-gray-500 mb-6">Thank you for reaching out. We will get back to you shortly.</p>
+            <button @click="emailModalOpen = false; emailSent = false;" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition">
+                Close
+            </button>
+        </div>
+
+        <div x-show="!emailSent">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Send an Email</h3>
+            <p class="text-sm text-gray-500 mb-6">To: <span class="font-semibold text-green-700" x-text="emailRecipient"></span></p>
+            
+            <form @submit.prevent="
+                    loading = true;
+                    fetch('{{ page.url }}', {
+                        method: 'POST',
+                        body: new FormData($el),
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(res => {
+                        if(res.ok) { emailSent = true; } 
+                        else { alert('Something went wrong. Please check your configurations.'); }
+                    })
+                    .catch(() => alert('Network error. Please try again.'))
+                    .finally(() => loading = false);
+                " class="space-y-4">
+                                
+                {% csrf_token %}
+                <input type="hidden" name="recipient_email" :value="emailRecipient">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                    <input type="text" name="name" required class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Your Email Address</label>
+                    <input type="email" name="email" required class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input type="text" name="subject" required class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <textarea name="message" rows="4" required class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm"></textarea>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" :disabled="loading" @click="emailModalOpen = false" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50">
+                        Cancel
+                    </button>
+                    <button type="submit" :disabled="loading" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium shadow transition flex items-center gap-2 disabled:opacity-50">
+                        <span x-text="loading ? 'Sending...' : 'Send Message'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -9,6 +9,9 @@ from modelcluster.fields import ParentalManyToManyField, ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
+from django.core.mail import send_mail
+from django.http import JsonResponse
+
 
 @register_snippet
 class Menu(ClusterableModel):
@@ -352,6 +355,30 @@ class HomePage(Page):
             context['about_page_content'] = AboutPage.objects.live().first()
 
             return context
+    
+    def serve(self, request, *args, **kwargs):
+        if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            name = request.POST.get('name')
+            user_email = request.POST.get('email')
+            subject = request.POST.get('subject')
+            message = request.POST.get('message')
+            recipient_email = request.POST.get('recipient_email', 'chiccochikaonda@gmail.com')
+
+            full_body = f"Message from: {name} ({user_email})\n\n{message}"
+
+            try:
+                send_mail(
+                    subject=f"[Contact Form] {subject}",
+                    message=full_body,
+                    from_email=None, # Uses DEFAULT_FROM_EMAIL config
+                    recipient_list=[recipient_email],
+                    fail_silently=False,
+                )
+                return JsonResponse({'status': 'success'})
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+        return super().serve(request, *args, **kwargs)
     
 # -----------------------------
 # About Page
