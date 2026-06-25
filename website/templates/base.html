@@ -17,14 +17,55 @@
         .text-justify-custom {
             text-align: justify;
         }
+        /* Custom Animation for Infinite Logo Carousel */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 25s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        .wagtail-rich-text ul {
+            list-style-type: disc !important;
+            padding-left: 2rem !important;
+            margin-bottom: 1rem;
+        }
+
+        .wagtail-rich-text ol {
+            list-style-type: decimal !important;
+            padding-left: 2rem !important;
+            margin-bottom: 1rem;
+        }
+
+        .wagtail-rich-text li {
+            margin-bottom: 0.5rem;
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800" x-data="{ emailModalOpen: false, emailRecipient: '', mobileMenuOpen: false }">
+<body class="bg-gray-50 text-gray-800" x-data="{ emailModalOpen: false, emailRecipient: '', mobileMenuOpen: false, loadingPage: false }">
+
+<div x-show="loadingPage" 
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm" 
+     x-cloak>
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-700 mb-4"></div>
+    <p class="text-green-800 font-medium tracking-wide animate-pulse">Loading...</p>
+</div>
 
 <header id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 bg-white shadow-md border-b border-gray-100">
     <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3 font-bold text-lg text-green-700">
+        <a href="/" @click="loadingPage = true" class="flex items-center gap-3 font-bold text-lg text-green-700">
             <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-auto">
             <span class="hidden sm:inline">
                 {{ current_site.site_name|default:"New Restoration Plan Malawi" }}
@@ -37,57 +78,126 @@
             </svg>
         </button>
 
-        <ul class="hidden md:flex items-center space-x-8 font-medium">
+        <ul class="hidden md:flex items-center space-x-6 font-medium text-sm lg:text-base">
             <li><a href="#home" class="nav-link hover:text-green-700 transition">Home</a></li>
-            <li><a href="#about" class="nav-link hover:text-green-700 transition">About</a></li>
-            <li><a href="#programs" class="nav-link hover:text-green-700 transition">Programs</a></li>
-            <li><a href="#projects" class="nav-link hover:text-green-700 transition">Projects</a></li>
             
             <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                <button class="flex items-center gap-1 nav-link hover:text-green-700 focus:outline-none py-2">
-                    Our Team
+                <button @click="window.location.href='#about'" class="flex items-center gap-1 nav-link hover:text-green-700 focus:outline-none py-2">
+                    About Us
                     <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div x-show="open" 
-                     x-transition:enter="transition ease-out duration-100"
-                     x-transition:enter-start="transform opacity-0 scale-95"
-                     x-transition:enter-end="transform opacity-100 scale-100"
-                     x-transition:leave="transition ease-in duration-75"
-                     x-transition:leave-start="transform opacity-100 scale-100"
-                     x-transition:leave-end="transform opacity-0 scale-95"
-                     class="absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50" x-cloak>
+                <div x-show="open" x-transition class="absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50" x-cloak>
+                    <a href="#about" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Who We Are</a>
+                    <a href="#mission-vision" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Mission & Vision</a>
+                    <hr class="border-gray-100 my-1">
                     <a href="#board" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Board of Trustees</a>
                     <a href="#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">Our Staff</a>
                 </div>
             </li>
 
+            <li><a href="#programs" class="nav-link hover:text-green-700 transition">Programs</a></li>
+            
+            <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                <button @click="window.location.href='#projects'" class="flex items-center gap-1 nav-link hover:text-green-700 focus:outline-none py-2">
+                    Projects
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="open" x-transition class="absolute left-0 mt-0 w-64 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50 max-h-80 overflow-y-auto" x-cloak>
+                    <a href="#projects" class="block px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-50">All Projects</a>
+                    <hr class="border-gray-100 my-1">
+                    {% for project in projects %}
+                        <a href="#project-{{ forloop.counter }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 truncate">
+                            {{ project.title }}
+                        </a>
+                    {% empty %}
+                        <span class="block px-4 py-2 text-sm text-gray-400 italic">No projects found</span>
+                    {% endfor %}
+                </div>
+            </li>
+
+            <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                <button class="flex items-center gap-1 nav-link hover:text-green-700 focus:outline-none py-2">
+                    Resources & News
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="open" x-transition class="absolute left-0 mt-0 w-56 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50" x-cloak>
+                    <div class="px-4 py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Documents</div>
+                    <a href="/resources/reports/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Reports</a>
+                    <a href="/resources/publications/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Publications</a>
+                    <a href="/resources/forms/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Forms</a>
+                    
+                    <hr class="border-gray-100 my-1">
+                    
+                    <div class="px-4 py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Updates</div>
+                    <a href="/news/latest-news/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Latest News</a>
+                    <a href="/news/press-releases/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Press Releases</a>
+                    <a href="/news/success-stories/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Success Stories</a>
+                    <a href="/news/blog-articles/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Blog Articles</a>
+                    <a href="/news/newsletters/" @click="loadingPage = true" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 pl-6">Newsletters</a>
+                </div>
+            </li>
+
+            <li><a href="#vacancies" class="nav-link hover:text-green-700 transition">Vacancies</a></li>
             <li><a href="#contact" class="nav-link hover:text-green-700 transition">Contact</a></li>
-            <li><a href="#vacancies/" class="nav-link hover:text-green-700 transition">Vacancies</a></li>
-            <li><a href="/donate/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition">Donate</a></li>
+            <li><a href="/donate/" @click="loadingPage = true" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full transition text-sm">Donate</a></li>
         </ul>
     </nav>
 
-    <div x-show="mobileMenuOpen" x-collapse class="md:hidden bg-white border-t border-gray-100 px-6 py-4" x-cloak>
+    <div x-show="mobileMenuOpen" x-collapse class="md:hidden bg-white border-t border-gray-100 px-6 py-4 max-h-[85vh] overflow-y-auto" x-cloak>
         <ul class="space-y-4 font-medium">
             <li><a href="#home" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Home</a></li>
-            <li><a href="#about" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">About</a></li>
-            <li><a href="#programs" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Programs</a></li>
-            <li><a href="#projects" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Projects</a></li>
             
-            <li x-data="{ teamOpen: false }">
-                <button @click="teamOpen = !teamOpen" class="w-full flex items-center justify-between py-1 hover:text-green-700 focus:outline-none">
-                    <span>Our Team</span>
-                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': teamOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <li x-data="{ aboutOpen: false }">
+                <button @click="aboutOpen = !aboutOpen" class="w-full flex items-center justify-between py-1 hover:text-green-700 focus:outline-none">
+                    <span>About Us</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': aboutOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <ul x-show="teamOpen" x-collapse class="pl-4 mt-2 space-y-2 text-sm border-l border-gray-200">
+                <ul x-show="aboutOpen" x-collapse class="pl-4 mt-2 space-y-2 text-sm border-l border-gray-200">
+                    <li><a href="#about" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Who We Are</a></li>
+                    <li><a href="#mission-vision" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Mission & Vision</a></li>
                     <li><a href="#board" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Board of Trustees</a></li>
                     <li><a href="#staff" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700">Our Staff</a></li>
                 </ul>
             </li>
 
+            <li><a href="#programs" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Programs</a></li>
+            
+            <li x-data="{ projectMenuOpen: false }">
+                <button @click="projectMenuOpen = !projectMenuOpen" class="w-full flex items-center justify-between py-1 hover:text-green-700 focus:outline-none">
+                    <span>Projects</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': projectMenuOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <ul x-show="projectMenuOpen" x-collapse class="pl-4 mt-2 space-y-2 text-sm border-l border-gray-200 max-h-48 overflow-y-auto">
+                    <li><a href="#projects" @click="mobileMenuOpen = false" class="block py-1 text-green-700 font-semibold">All Projects</a></li>
+                    {% for project in projects %}
+                        <li><a href="#project-{{ forloop.counter }}" @click="mobileMenuOpen = false" class="block py-1 text-gray-600 hover:text-green-700 truncate">{{ project.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <li x-data="{ resNewsOpen: false }">
+                <button @click="resNewsOpen = !resNewsOpen" class="w-full flex items-center justify-between py-1 hover:text-green-700 focus:outline-none">
+                    <span>Resources & News</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': resNewsOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <ul x-show="resNewsOpen" x-collapse class="pl-4 mt-2 space-y-2 text-sm border-l border-gray-200">
+                    <div class="text-xs font-bold text-gray-400 pt-1 uppercase tracking-wider">Documents</div>
+                    <li><a href="/resources/reports/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Reports</a></li>
+                    <li><a href="/resources/publications/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Publications</a></li>
+                    <li><a href="/resources/forms/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Forms</a></li>
+                    
+                    <div class="text-xs font-bold text-gray-400 pt-2 uppercase tracking-wider">Updates</div>
+                    <li><a href="/news/latest-news/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Latest News</a></li>
+                    <li><a href="/news/press-releases/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Press Releases</a></li>
+                    <li><a href="/news/success-stories/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Success Stories</a></li>
+                    <li><a href="/news/blog-articles/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Blog Articles</a></li>
+                    <li><a href="/news/newsletters/" @click="mobileMenuOpen = false; loadingPage = true" class="block py-1 text-gray-600 hover:text-green-700">Newsletters</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#vacancies" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Vacancies</a></li>
             <li><a href="#contact" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Contact</a></li>
-            <li><a href="#vacancies/" @click="mobileMenuOpen = false" class="block py-1 hover:text-green-700">Vacancies</a></li>
-            <li class="pt-2"><a href="/donate/" class="block text-center bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition">Donate</a></li>
+            <li class="pt-2"><a href="/donate/" @click="mobileMenuOpen = false; loadingPage = true" class="block text-center bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition">Donate</a></li>
         </ul>
     </div>
 </header>
@@ -119,51 +229,56 @@
 
 <section id="about" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
-
         <h2 class="text-3xl font-bold text-center mb-12">
             {{ about_page_content.title }}
         </h2>
 
         <div class="grid md:grid-cols-2 gap-12 items-center bg-white rounded-2xl shadow-lg p-6 md:p-10">
-
             <div class="w-full">
                 {% if about_page_content.image %}
                     {% image about_page_content.image fill-800x600 as img %}
-                    <img src="{{ img.url }}" 
-                         alt="{{ about_page_content.title }}"
-                         class="w-full h-96 object-cover rounded-2xl shadow-md">
+                    <img src="{{ img.url }}" alt="{{ about_page_content.title }}" class="w-full h-96 object-cover rounded-2xl shadow-md">
                 {% else %}
-                    <img src="{% static 'images/about-placeholder.jpg' %}" 
-                         alt="About"
-                         class="w-full h-96 object-cover rounded-2xl shadow-md">
+                    <img src="{% static 'images/about-placeholder.jpg' %}" alt="About" class="w-full h-96 object-cover rounded-2xl shadow-md">
                 {% endif %}
             </div>
 
             <div>
-                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none">
+                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none text-justify">
                     {{ about_page_content.introduction|richtext }}
                 </div>
-
-                <div class="mt-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg">
+                <div class="mt-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg text-justify">
                     <p class="text-sm text-gray-700">
                         {{ about_page_content.what_we_do|safe }}
                     </p>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 <section id="mission-vision" class="py-20 bg-gray-100">
-    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-        <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
-            <h2 class="text-2xl font-bold mb-4 text-green-700">Our Mission</h2>
-            <div>{{ page.mission|safe }}</div>
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-12 mb-12">
+            <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
+                <h2 class="text-2xl font-bold mb-4 text-green-700">Our Mission</h2>
+                <div class="text-gray-700 leading-relaxed wagtail-rich-text">
+                    {{ page.mission|richtext }}
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
+                <h2 class="text-2xl font-bold mb-4 text-green-700">Our Vision</h2>
+                <div class="text-gray-700 leading-relaxed wagtail-rich-text">
+                    {{ page.vision|richtext }}
+                </div>
+            </div>
         </div>
-        <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-600">
-            <h2 class="text-2xl font-bold mb-4 text-green-700">Our Vision</h2>
-            <div>{{ page.vision|safe }}</div>
+
+        <div class="bg-white p-8 rounded-2xl shadow border-t-4 border-green-700">
+            <h2 class="text-2xl font-bold mb-4 text-green-700 text-center">Our Core Values</h2>
+            <div class="text-gray-700 leading-relaxed wagtail-rich-text text-left">
+                {{ page.values|richtext }}
+            </div>
         </div>
     </div>
 </section>
@@ -172,11 +287,16 @@
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12">Our Key Programs</h2>
         
+        <div class="w-full text-center mb-12 text-gray-600">
+            <p class="text-lg leading-relaxed max-w-4xl mx-auto">
+                At <strong>New Restoration Plan—Malawi</strong>, we implement a diverse portfolio of sustainable development, advocacy, and humanitarian initiatives designed to build community resilience, promote human rights, and improve livelihoods across Malawi, targeting the root causes of systemic poverty through grassroots ecological restoration, essential public health campaigns, and dedicated social welfare for vulnerable children, senior citizens, and persons with disabilities.
+            </p>
+            <hr class="mt-8 border-t border-gray-300 w-full" />
+        </div>
+        
         <div class="grid md:grid-cols-3 gap-8">
             {% for program in programs %}
-                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col" 
-                     x-data="{ expanded: false }">
-                    
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col" x-data="{ expanded: false }">
                     {% if program.image %}
                         {% image program.image fill-600x400 as img %}
                         <div class="h-56 w-full overflow-hidden">
@@ -187,18 +307,16 @@
                     <div class="p-6 flex-grow">
                         <h3 class="font-bold text-xl mb-3 text-gray-900">{{ program.title }}</h3>
                         
-                        <div class="text-gray-600 text-sm leading-relaxed prose max-w-none">
+                        <div class="text-gray-600 text-sm leading-relaxed prose max-w-none text-justify">
                             <div x-show="!expanded">
                                 {{ program.description|striptags|truncatewords:20 }}
                             </div>
-                            
                             <div x-show="expanded" x-cloak>
                                 {{ program.description|richtext }}
                             </div>
                         </div>
 
-                        <button @click="expanded = !expanded" 
-                                class="inline-flex items-center text-green-700 font-bold mt-4 hover:text-green-800 transition-colors focus:outline-none">
+                        <button @click="expanded = !expanded" class="inline-flex items-center text-green-700 font-bold mt-4 hover:text-green-800 transition-colors focus:outline-none">
                             <span x-text="expanded ? 'Show Less' : 'Read More...'"></span>
                         </button>
                     </div>
@@ -215,27 +333,24 @@
         <h2 class="text-3xl font-bold text-center mb-12">Our Projects</h2>
         
         <div class="space-y-16">
-            {% for project in projects %}
-                <div class="bg-white p-8 md:p-12 rounded-3xl shadow-lg transition-all duration-300 hover:shadow-2xl" 
-                     x-data="{ 
+           {% for project in projects %}
+                <div id="project-{{ forloop.counter }}" class="bg-white p-8 md:p-12 rounded-3xl shadow-lg transition-all duration-300 hover:shadow-2xl" 
+                    x-data="{ 
                         images: [{% for img_obj in project.images.all %}'{% image img_obj.image original as img %}{{ img.url }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
                         activeImage: 0,
                         expanded: false,
                         showModal: false
-                     }"
+                    }"
                      x-init="setInterval(() => { activeImage = (activeImage + 1) % images.length }, 5000)">
                     
                     {% if project.images.all %}
                         <div class="w-full mb-10 overflow-hidden rounded-2xl cursor-pointer" @click="showModal = true">
                             <template x-for="(url, index) in images" :key="index">
-                                <img :src="url" x-show="activeImage === index" 
-                                     class="w-full h-64 md:h-96 object-cover object-top transition-opacity duration-700 ease-in-out">
+                                <img :src="url" x-show="activeImage === index" class="w-full h-64 md:h-96 object-cover object-top transition-opacity duration-700 ease-in-out">
                             </template>
                         </div>
 
-                        <div x-show="showModal" x-cloak 
-                             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
-                             @click.self="showModal = false">
+                        <div x-show="showModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" @click.self="showModal = false">
                             <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">×</button>
                             <img :src="images[activeImage]" class="max-w-full max-h-[90vh] object-contain rounded-lg">
                         </div>
@@ -244,12 +359,15 @@
                     <div class="w-full">
                         <h3 class="font-bold text-4xl mb-6 text-gray-900">{{ project.title }}</h3>
                         
-                        <div class="text-gray-700 leading-relaxed text-lg prose max-w-none">
-                            <div x-show="!expanded">{{ project.description|striptags|truncatewords:60 }}</div>
-                            <div x-show="expanded" x-cloak>{{ project.description|richtext }}</div>
+                        <div class="text-gray-700 leading-relaxed text-lg">
+                            <div x-show="!expanded" class="text-justify">
+                                {{ project.description|striptags|truncatewords:60 }}
+                            </div>
+                            <div x-show="expanded" x-cloak class="text-gray-700 leading-relaxed wagtail-rich-text text-left">
+                                {{ project.description|richtext }}
+                            </div>
                             
-                            <button @click="expanded = !expanded" 
-                                    class="inline-flex items-center text-green-700 font-bold mt-6 hover:text-green-800 transition-colors focus:outline-none">
+                            <button @click="expanded = !expanded" class="inline-flex items-center text-green-700 font-bold mt-6 hover:text-green-800 transition-colors focus:outline-none">
                                 <span x-text="expanded ? 'Show Less' : 'Read Full Project Details...'"></span>
                             </button>
                         </div>
@@ -262,23 +380,113 @@
     </div>
 </section>
 
+<section id="partners" class="py-20 bg-white border-t border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-4">Our Partners & Networks</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto text-lg">
+            Our impact across Malawi is amplified through strategic collaborations with local leadership, regulatory authorities, and dedicated civil society networks.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-green-100 text-green-700 flex items-center justify-center font-bold mb-4">🏛️</div>
+                <h3 class="font-bold text-lg mb-2 text-gray-900">Institutional Partners</h3>
+                <p class="text-sm text-gray-600 leading-relaxed text-justify-custom">
+                    Collaborating closely with urban entities like the <strong>Lilongwe City Council (LCC)</strong> on comprehensive 5-year frameworks like the <em>Mzinda Uwale</em> project to realize cleaner environments matching global standards.
+                </p>
+            </div>
+            
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-green-100 text-green-700 flex items-center justify-center font-bold mb-4">🌍</div>
+                <h3 class="font-bold text-lg mb-2 text-gray-900">Grassroots Leaders</h3>
+                <p class="text-sm text-gray-600 leading-relaxed text-justify-custom">
+                    Partnering seamlessly alongside traditional leaders, including the <strong>Chewa Supreme Council</strong> representatives, ensuring all localized action points respect culture while delivering impactful changes.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-green-100 text-green-700 flex items-center justify-center font-bold mb-4">🤝</div>
+                <h3 class="font-bold text-lg mb-2 text-gray-900">Advocacy & Welfare Allies</h3>
+                <p class="text-sm text-gray-600 leading-relaxed text-justify-custom">
+                    Working reliably with strategic public health setups and safety nets safeguarding elderly citizens, youth networks, and persons with physical disabilities.
+                </p>
+            </div>
+        </div>
+
+        <div class="w-full overflow-hidden relative bg-gray-50 py-8 rounded-2xl border border-gray-100">
+            <div class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
+            <div class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-gray-50 to-transparent z-10"></div>
+            
+            <div class="animate-marquee flex items-center gap-16">
+                {% for partner in partners %}
+                    {% if partner.website %}
+                        <a href="{{ partner.website }}" target="_blank" @click="loadingPage = true; setTimeout(() => loadingPage = false, 800)" class="flex items-center gap-3 shrink-0 transition hover:scale-105 group">
+                    {% else %}
+                        <div class="flex items-center gap-3 shrink-0 group">
+                    {% endif %}
+
+                        {% if partner.logo %}
+                            {% image partner.logo max-150x50 as p_logo %}
+                            <img src="{{ p_logo.url }}" alt="{{ partner.name }}" class="h-12 w-auto opacity-60 group-hover:opacity-100 object-contain transition">
+                            <span class="text-sm font-bold tracking-wide text-gray-500 group-hover:text-green-700 transition uppercase whitespace-nowrap">
+                                {{ partner.name }}
+                            </span>
+                        {% else %}
+                            <span class="text-xl font-extrabold tracking-wider text-gray-400 uppercase whitespace-nowrap group-hover:text-green-700 transition">
+                                {{ partner.name }}
+                            </span>
+                        {% endif %}
+
+                    {% if partner.website %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <span class="text-gray-400 italic">No partners added yet.</span>
+                {% endfor %}
+
+                {% for partner in partners %}
+                    {% if partner.website %}
+                        <a href="{{ partner.website }}" target="_blank" @click="loadingPage = true; setTimeout(() => loadingPage = false, 800)" class="flex items-center gap-3 shrink-0 transition hover:scale-105 group" aria-hidden="true">
+                    {% else %}
+                        <div class="flex items-center gap-3 shrink-0 group" aria-hidden="true">
+                    {% endif %}
+
+                        {% if partner.logo %}
+                            {% image partner.logo max-150x50 as p_logo %}
+                            <img src="{{ p_logo.url }}" alt="{{ partner.name }}" class="h-12 w-auto opacity-60 group-hover:opacity-100 object-contain transition">
+                            <span class="text-sm font-bold tracking-wide text-gray-500 group-hover:text-green-700 transition uppercase whitespace-nowrap">
+                                {{ partner.name }}
+                            </span>
+                        {% else %}
+                            <span class="text-xl font-extrabold tracking-wider text-gray-400 uppercase whitespace-nowrap group-hover:text-green-700 transition">
+                                {{ partner.name }}
+                            </span>
+                        {% endif %}
+
+                    {% if partner.website %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="staff" class="py-20 bg-gray-100">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-3xl font-bold text-center mb-12">Our Staff</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {% for member in staff_members %}
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col" 
-                     x-data="{ expanded: false, showModal: false }">
-                    
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col" x-data="{ expanded: false, showModal: false }">
                     {% if member.photo %}
                         {% image member.photo fill-500x500 as staff_photo %}
-                        <img src="{{ staff_photo.url }}" 
-                             @click="showModal = true"
-                             class="w-full h-72 object-cover cursor-pointer hover:opacity-90 transition">
+                        <img src="{{ staff_photo.url }}" @click="showModal = true" class="w-full h-72 object-cover cursor-pointer hover:opacity-90 transition">
                         
-                        <div x-show="showModal" x-cloak 
-                             class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
-                             @click.self="showModal = false">
+                        <div x-show="showModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" @click.self="showModal = false">
                             <button @click="showModal = false" class="absolute top-5 right-5 text-white text-4xl">×</button>
                             {% image member.photo original as full_photo %}
                             <img src="{{ full_photo.url }}" class="max-w-full max-h-[90vh] object-contain rounded-lg">
@@ -289,7 +497,7 @@
                         <h3 class="text-xl font-semibold">{{ member.name }}</h3>
                         <p class="text-green-600 font-medium mb-4">{{ member.position }}</p>
                         
-                        <div class="text-sm text-gray-600 leading-relaxed text-left">
+                        <div class="text-sm text-gray-600 leading-relaxed text-justify">
                             <div x-show="!expanded">
                                 {{ member.bio|truncatewords:20 }}
                             </div>
@@ -297,8 +505,7 @@
                                 {{ member.bio }}
                             </div>
                             
-                            <button @click="expanded = !expanded" 
-                                    class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block w-full text-center">
+                            <button @click="expanded = !expanded" class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block w-full text-center">
                                 <span x-text="expanded ? 'Show Less' : 'Read Bio...'"></span>
                             </button>
                         </div>
@@ -320,8 +527,7 @@
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for trustee in trustee_members %}
-                <div class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-green-200 transition-all duration-300 shadow-sm hover:shadow-lg" 
-                     x-data="{ expanded: false }">
+                <div class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-green-200 transition-all duration-300 shadow-sm hover:shadow-lg" x-data="{ expanded: false }">
                     <div class="flex items-center gap-4 mb-6">
                         {% if trustee.photo %}
                             {% image trustee.photo fill-150x150 as t_photo %}
@@ -345,20 +551,86 @@
                             {{ trustee.bio }}
                         </div>
                         
-                        <button @click="expanded = !expanded" 
-                                class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block text-xs uppercase tracking-wider">
+                        <button @click="expanded = !expanded" class="text-green-700 font-bold mt-2 hover:underline focus:outline-none block text-xs uppercase tracking-wider">
                             <span x-text="expanded ? 'Read Less' : 'Read More...'"></span>
                         </button>
                     </div>
 
                     <div class="flex gap-3 text-gray-400 pt-4 border-t border-gray-200">
-                        {% if trustee.email %}<a href="mailto:{{ trustee.email }}" class="hover:text-green-600 text-xs font-semibold">Email</a>{% endif %}
-                        {% if trustee.linkedin %}<a href="{{ trustee.linkedin }}" target="_blank" class="hover:text-green-600 text-xs font-semibold">LinkedIn</a>{% endif %}
-                        {% if trustee.whatsapp %}<a href="https://wa.me/{{ trustee.whatsapp }}" target="_blank" class="hover:text-green-600 text-xs font-semibold">WhatsApp</a>{% endif %}
+                        {% if trustee.email %}<a href="mailto:{{ trustee.email }}" @click="loadingPage = true; setTimeout(() => loadingPage = false, 800)" class="hover:text-green-600 text-xs font-semibold">Email</a>{% endif %}
+                        {% if trustee.linkedin %}<a href="{{ trustee.linkedin }}" @click="loadingPage = true; setTimeout(() => loadingPage = false, 800)" target="_blank" class="hover:text-green-600 text-xs font-semibold">LinkedIn</a>{% endif %}
+                        {% if trustee.whatsapp %}<a href="https://wa.me/{{ trustee.whatsapp }}" @click="loadingPage = true; setTimeout(() => loadingPage = false, 800)" target="_blank" class="hover:text-green-600 text-xs font-semibold">WhatsApp</a>{% endif %}
                     </div>
                 </div>
             {% empty %}
                 <p class="text-center text-gray-500 col-span-full">Trustee profiles coming soon.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="vacancies" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-4">Vacancies</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto text-lg">
+            Join our mission to help restore land, lives, and livelihoods across Malawi.
+        </p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for vacancy in vacancies %}
+                <div class="p-6 md:p-8 rounded-2xl border transition-all duration-300 shadow-sm flex flex-col justify-between
+                            {% if vacancy.deadline < today %} bg-gray-100/70 border-gray-200 opacity-75 {% else %} bg-gray-50 border-gray-100 hover:border-green-200 hover:shadow-lg {% endif %}">
+                    <div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <h3 class="text-2xl font-bold {% if vacancy.deadline < today %} text-gray-500 {% else %} text-gray-900 {% endif %}">
+                                {{ vacancy.title }}
+                            </h3>
+                            {% if vacancy.deadline < today %}
+                                <span class="bg-gray-200 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-full">Closed</span>
+                            {% else %}
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Open</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                            {% if vacancy.location %}
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    {{ vacancy.location }}
+                                </span>
+                            {% endif %}
+                            <span class="flex items-center gap-1 {% if vacancy.deadline < today %} text-red-400 {% endif %}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Deadline: {{ vacancy.deadline|date:"F d, Y" }}
+                            </span>
+                        </div>
+                        
+                        <div class="text-gray-600 prose max-w-none text-sm mb-6 text-justify-custom">
+                            {{ vacancy.description|richtext }}
+                        </div>
+                    </div>
+
+                    <div>
+                        {% if vacancy.deadline < today %}
+                            <button disabled class="inline-block bg-gray-300 text-gray-500 font-medium px-5 py-2.5 rounded-xl text-sm text-center w-full sm:w-auto cursor-not-allowed">
+                                Application Closed
+                            </button>
+                        {% else %}
+                            <button @click="emailRecipient = 'info@newresmi.com'; emailModalOpen = true;" class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2.5 rounded-xl transition text-sm text-center w-full sm:w-auto">
+                                Apply Now
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-10 bg-gray-50 border border-dashed border-gray-200 rounded-2xl">
+                    <p class="text-gray-500 text-lg">There are currently no position announcements listed. Check back later!</p>
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -376,12 +648,10 @@
                     <p class="flex items-start gap-3">
                         <span class="font-bold min-w-[70px]">Email:</span> 
                         <span class="flex flex-col gap-1">
-                            <button @click="emailRecipient = 'info@newresmi.com'; emailModalOpen = true;" 
-                                    class="text-green-600 hover:underline focus:outline-none text-left font-medium">
+                            <button @click="emailRecipient = 'info@newresmi.com'; emailModalOpen = true;" class="text-green-600 hover:underline focus:outline-none text-left font-medium">
                                 info@newresmi.com
                             </button>
-                            <button @click="emailRecipient = 'chiccochikaonda@gmail.com'; emailModalOpen = true;" 
-                                    class="text-gray-500 hover:underline focus:outline-none text-left text-sm">
+                            <button @click="emailRecipient = 'chiccochikaonda@gmail.com'; emailModalOpen = true;" class="text-gray-500 hover:underline focus:outline-none text-left text-sm">
                                 chiccochikaonda@gmail.com (Backup)
                             </button>
                         </span>
@@ -405,14 +675,7 @@
             </div>
 
             <div class="w-full h-80 rounded-2xl overflow-hidden shadow-inner">
-                <iframe 
-                    src="https://www.google.com/maps/d/embed?mid=17Q8_JAdhKUoPvYpPLIb2LO1ghvAS184&ehbc=2E312F" 
-                    width="100%" 
-                    height="100%" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
+                <iframe src="https://www.google.com/maps/d/embed?mid=17Q8_JAdhKUoPvYpPLIb2LO1ghvAS184&ehbc=2E312F" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </div>
@@ -441,12 +704,8 @@
      class="fixed inset-0 z-[150] flex items-center justify-center bg-black/50 p-4 transition-opacity duration-300"
      @keydown.escape.window="emailModalOpen = false; emailSent = false;">
     
-    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative"
-         @click.away="emailModalOpen = false; emailSent = false;">
-        
-        <button @click="emailModalOpen = false; emailSent = false;" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold focus:outline-none">
-            ×
-        </button>
+    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative" @click.away="emailModalOpen = false; emailSent = false;">
+        <button @click="emailModalOpen = false; emailSent = false;" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold focus:outline-none">×</button>
         
         <div x-show="emailSent" class="text-center py-8">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
@@ -456,9 +715,7 @@
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Email Sent Successfully!</h3>
             <p class="text-sm text-gray-500 mb-6">Thank you for reaching out. We will get back to you shortly.</p>
-            <button @click="emailModalOpen = false; emailSent = false;" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition">
-                Close
-            </button>
+            <button @click="emailModalOpen = false; emailSent = false;" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition">Close</button>
         </div>
 
         <div x-show="!emailSent">
@@ -504,9 +761,7 @@
                 </div>
                 
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" :disabled="loading" @click="emailModalOpen = false" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50">
-                        Cancel
-                    </button>
+                    <button type="button" :disabled="loading" @click="emailModalOpen = false" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50">Cancel</button>
                     <button type="submit" :disabled="loading" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium shadow transition flex items-center gap-2 disabled:opacity-50">
                         <span x-text="loading ? 'Sending...' : 'Send Message'"></span>
                     </button>

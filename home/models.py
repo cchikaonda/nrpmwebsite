@@ -11,6 +11,7 @@ from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from django.utils import timezone
 
 
 @register_snippet
@@ -312,6 +313,7 @@ class HomePage(Page):
 
     mission = RichTextField(blank=True, null=True)
     vision = RichTextField(blank=True, null=True)
+    values = RichTextField(blank=True, null=True)
     
 
     key_programs = StreamField([
@@ -339,6 +341,7 @@ class HomePage(Page):
         FieldPanel('about_text'),
         FieldPanel('mission'),
         FieldPanel('vision'),
+        FieldPanel('values'),
         FieldPanel('key_programs'),
         FieldPanel('vendor_app_url'),
         FieldPanel('partners'),
@@ -351,9 +354,10 @@ class HomePage(Page):
             context['staff_members'] = StaffMember.objects.all()
             context['projects'] = Project.objects.all()
             context['trustee_members'] = TrusteeMember.objects.all()
-            context['vacancies'] = Vacancy.objects.filter(is_open=True)
+            context['vacancies'] = Vacancy.objects.filter(is_open=True).order_by('-deadline')
             context['about_page_content'] = AboutPage.objects.live().first()
-
+            context['partners'] = Partner.objects.all()
+            context['today'] = timezone.now().date()
             return context
     
     def serve(self, request, *args, **kwargs):
@@ -442,9 +446,6 @@ class VacanciesIndexPage(Page):
         context['vacancies'] = self.vacancies.all()
         return context
 
-
-
-
 class Vacancy(Orderable): # Change models.Model to Orderable
     page = ParentalKey(
         'VacanciesIndexPage', 
@@ -467,7 +468,6 @@ class Vacancy(Orderable): # Change models.Model to Orderable
 
     def __str__(self):
         return self.title
-
 
 # -----------------------------
 # Contact Page
