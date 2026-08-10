@@ -74,8 +74,7 @@ class MenuItem(Orderable):
 
     def __str__(self):
         return self.title
-
-
+    
 # -----------------------------
 # Site Branding (Settings)
 # -----------------------------
@@ -247,7 +246,6 @@ class ProjectImage(Orderable):
         FieldPanel('image'),
         FieldPanel('caption'),
     ]
-
 # -----------------------------
 # Program / Project Snippet
 # -----------------------------
@@ -281,7 +279,6 @@ class ProgramImage(Orderable):
         FieldPanel('image'),
         FieldPanel('caption'),
     ]
-
 
 # The model to hold the individual slides
 class HomePageSlider(Orderable):
@@ -358,6 +355,7 @@ class HomePage(Page):
             context['about_page_content'] = AboutPage.objects.live().first()
             context['partners'] = Partner.objects.all()
             context['today'] = timezone.now().date()
+            context['latest_news'] = NewsPage.objects.live().order_by('-publication_date')[:3]
             return context
     
     def serve(self, request, *args, **kwargs):
@@ -416,17 +414,6 @@ class ProgramPage(Page):
         FieldPanel('programs'),
     ]
 
-# -----------------------------
-# News Page
-# -----------------------------
-class NewsPage(Page):
-    body = RichTextField(blank=True)
-    publication_date = models.DateField()
-
-    content_panels = Page.content_panels + [
-        FieldPanel('body'),
-        FieldPanel('publication_date'),
-    ]
 
 # -----------------------------
 # Vacancies Page
@@ -492,5 +479,44 @@ class DonatePage(Page):
     body = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [
+        FieldPanel('body'),
+    ]
+
+
+# Add these to your models.py
+
+class NewsIndexPage(Page):
+    intro = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro'),
+    ]
+
+    # Allows only NewsPage as children
+    subpage_types = ['NewsPage']
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        # Get all live news pages, ordered by latest date
+        news_pages = NewsPage.objects.child_of(self).live().order_by('-publication_date')
+        context['news_pages'] = news_pages
+        return context
+
+class NewsPage(Page):
+    body = RichTextField(blank=True)
+    publication_date = models.DateField("Publication date")
+    
+    # Optional: Add an image field for the news preview
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel('publication_date'),
+        FieldPanel('image'),
         FieldPanel('body'),
     ]
