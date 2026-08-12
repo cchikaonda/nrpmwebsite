@@ -238,8 +238,8 @@ sudo systemctl restart nginx
 **Chicco Chikaonda**
 
 * Software Developer & Systems Engineer
-* Email: [chicco@amityonline.com](mailto:chicco@amityonline.com)
-* Phone: +265 999 048 474
+* Email: [chiccochikaonda@gmail.com](mailto:chiccochikaonda@gmail.com)
+* Phone: +265 999 048 474 / +265 888 321 420
 
 ---
 
