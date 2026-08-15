@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 SECRET_KEY = "django-insecure-k9qj_mq84)i*zj&^41gdg649rdm)u_*jq7dlzjn=mjl6n%fszl"
 
