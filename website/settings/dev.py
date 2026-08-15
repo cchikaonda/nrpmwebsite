@@ -11,6 +11,17 @@ ALLOWED_HOSTS = ["*"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# Database setting using PostgreSQL
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "nrpmw_db",
+        "USER": "postgres",
+        "PASSWORD": "michelle@2018",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
 
 try:
     from .local import *

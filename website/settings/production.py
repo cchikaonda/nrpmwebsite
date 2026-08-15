@@ -12,6 +12,18 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+# Database setting using PostgreSQL
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "website_db",
+        "USER": "website_user",
+        "PASSWORD": "MICHELLE@2018",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
 STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/nrpmwebsite/staticfiles/"
 
